@@ -1,8 +1,8 @@
 <template>
   <div>
     <div>
-      <h3>Sign In</h3>
-      <form @submit.prevent="signin">
+      <h3>Sign Up</h3>
+      <form @submit.prevent="signup">
         <div v-if="error">{{ error }}></div>
 
         <div>
@@ -15,10 +15,15 @@
           <input type="password" v-model="password" id="password">
         </div>
 
-        <button type="submit">Sign In</button>
+        <div>
+          <label for="password">Password Confirmation</label>
+          <input type="password" v-model="password_confirmation" id="password_confirmation">
+        </div>
+
+        <button type="submit">Sign Up</button>
 
         <div>
-          <router-link to="/signup">Sign Up</router-link>
+          <router-link to="/">Sign In</router-link>
         </div>
 
       </form>
@@ -28,11 +33,12 @@
 
 <script>
 export default {
-  name: 'Signin',
+  name: 'Signup',
   data () {
     return {
       email: '',
       password: '',
+      password_confirmation: '',
       error: ''
     }
   },
@@ -44,7 +50,7 @@ export default {
   },
   methods: {
     signin () {
-      this.$http.plain.post('/signin', { email: this.email, password: this.password })
+      this.$http.plain.post('/signup', { email: this.email, password: this.password, password_confirmation: this.password_confirmation })
         .then(response => this.signinSuccessful(response))
         .catch(error => this.signinFailed(error))
     },
@@ -60,7 +66,7 @@ export default {
       this.$router.replace('/records')
     },
     signinFailed (error) {
-      this.error = (error.response && error.response.data && error.response.data.error) || ''
+      this.error = (error.response && error.response.data && error.response.data.error) || 'Something went wrong'
       delete localStorage.csrf
       delete localStorage.signedIn
     },
